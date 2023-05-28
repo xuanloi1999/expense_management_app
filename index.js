@@ -90,6 +90,7 @@ app.post('/transaction/add', async (req, res) => {
 
 app.post('/transaction/update', async (req, res) => {
     const transactionParams = req.body
+    transactionParams.id = req.body.id
     transactionParams.updateAt = Date.now()
     try {
         await Transaction.updateOne({id: transactionParams.id}, transactionParams)
