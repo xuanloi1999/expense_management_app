@@ -114,7 +114,8 @@ app.get('/transaction/delete', async (req, res) => {
 app.get('/transaction', async (req, res) => {
     const transactionId = req.query.id
     const transaction = await Transaction.find({_id: transactionId});
-    return transaction? res.json(transaction): res.send("Find transaction error")
+    console.log(transaction[0].deletedAt);
+    return transaction[0].deletedAt === undefined? res.json(transaction): res.send("Transaction was deleted")
 })
 
 connectDB().then(() => {
