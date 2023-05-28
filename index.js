@@ -8,6 +8,10 @@ const User = require("./models/users")
 const app = express()
 const PORT = process.env.PORT || 3000
 
+//setup parames always return runtime
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
 mongoose.set("strictQuery", false)
 const connectDB = async () => {
     try {
@@ -23,8 +27,8 @@ app.get('/', (req, res) => {
     res.send({title: 'Test'})
 })
 
-app.get('/add-user', async (req, res) => {
-    const user = {username: "xuanloi", password: "123"}
+app.post('/user/add', async (req, res) => {
+    const user = req.body
     try {
         await User.insertMany([user])
         res.send("Data Added..")
@@ -34,8 +38,9 @@ app.get('/add-user', async (req, res) => {
 })
 
 app.get('/user', async (req, res) => {
-    const users = await User.find();
-    return users? res.json(users): res.send("Something error")
+    const username = req.query.username
+    const user = await User.find({username: username});
+    return user? res.json(user): res.send("Something error")
 })
 
 
