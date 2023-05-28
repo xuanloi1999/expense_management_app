@@ -34,8 +34,8 @@ app.get('/add-user', async (req, res) => {
 })
 
 app.get('/user', async (req, res) => {
-    const book = await User.find();
-    return book? res.json(book): res.send("Something error")
+    const users = await User.find();
+    return users? res.json(users): res.send("Something error")
 })
 
 
