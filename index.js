@@ -26,7 +26,7 @@ app.get('/', (req, res) => {
 app.get('/add-user', async (req, res) => {
     const user = {username: "xuanloi", password: "123"}
     try {
-        await User.insertOne(user)
+        await User.insertMany([user])
         res.send("Data Added..")
     } catch (error) {
         console.log("err" + error);
