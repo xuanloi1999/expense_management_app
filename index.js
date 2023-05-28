@@ -82,7 +82,7 @@ app.post('/transaction/add', async (req, res) => {
     const transactionParams = req.body
     try {
         await Transaction.insertMany([transactionParams])
-        res.send("Add transaction complete")
+        res.send("Add transaction completely")
     } catch (error) {
         console.log("err" + error);
     }
@@ -94,7 +94,7 @@ app.post('/transaction/update', async (req, res) => {
     transactionParams.id = transactionId
     transactionParams.updateAt = Date.now()
     try {
-        await Transaction.updateOne({id: transactionId}, transactionParams)
+        await Transaction.updateOne({_id: transactionId}, transactionParams)
         res.send("Update transaction completely")
     } catch (error) {
         console.log("err" + error);
