@@ -20,7 +20,7 @@ const connectDB = async () => {
 }
 
 app.get('/', (req, res) => {
-    res.send({title: 'Books'})
+    res.send({title: 'Test'})
 })
 
 app.get('/add-user', async (req, res) => {
