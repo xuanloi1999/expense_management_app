@@ -4,6 +4,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const User = require("./models/users")
 const Category = require("./models/category")
+const Transaction = require("./models/transaction")
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -75,7 +76,44 @@ app.get('/category', async (req, res) => {
     return category? res.json(category): res.send("Something error")
 })
 
+//Transaction
 
+app.post('/transaction/add', async (req, res) => {
+    const transactionParams = req.body
+    try {
+        await Transaction.insertMany([transactionParams])
+        res.send("Add transaction complete")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.post('/transaction/update', async (req, res) => {
+    const transactionParams = req.body
+    transactionParams.updateAt = Date.now()
+    try {
+        await Transaction.updateOne({id: transactionParams.id}, transactionParams)
+        res.send("Update transaction completely")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.get('/transaction/delete', async (req, res) => {
+    const transactionID = req.query.id
+    try {
+        await Transaction.updateOne({id: transactionID}, {deletedAt: Date.now()})
+        res.send("Delete transaction completely")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.get('/transaction', async (req, res) => {
+    const transactionId = req.query.id
+    const transaction = await Transaction.find({_id: transactionId});
+    return transaction? res.json(transaction): res.send("Something error")
+})
 
 connectDB().then(() => {
     app.listen(PORT, () => {
