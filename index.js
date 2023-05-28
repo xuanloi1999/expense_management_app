@@ -114,7 +114,7 @@ app.get('/transaction/delete', async (req, res) => {
 app.get('/transaction', async (req, res) => {
     const transactionId = req.query.id
     const transaction = await Transaction.find({_id: transactionId});
-    return transaction? res.json(transaction): res.send("Something error")
+    return transaction.deletedAt? res.json([]): res.json(transaction)
 })
 
 connectDB().then(() => {
