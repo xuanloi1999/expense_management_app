@@ -47,28 +47,40 @@ app.get('/user', async (req, res) => {
 })
 
 //category
-
-app.post('/category/add', async (req, res) => {
-    const categoryParams = req.body
-    categoryParams.slug = req.body.name.replace(' ', '-')+ '-' +  Math.floor(Date.now() / 1000);;
-
-    try {
-        await Category.insertMany([categoryParams])
-        res.send("Add category complete")
-    } catch (error) {
-        console.log("err" + error);
-    }
-})
-
 app.post('/category/update', async (req, res) => {
     const categoryParams = req.body
     try {
-        await Category.updateOne({slug: categoryParams.slug}, categoryParams)
-        res.send("Update Category completely")
+        await Category.findByIdAndUpdate({_id: categoryParams.id}, {...categoryParams, updateAt: Date.now()})
+        const category = await Category.find({_id: categoryParams.id});
+        return category? res.json(category): res.send("Something error")
     } catch (error) {
         console.log("err" + error);
     }
 })
+
+app.delete('/category', async (req, res) => {
+    const id = req.query.id
+    try {
+        await Category.findByIdAndUpdate({_id: id}, { deletedAt: Date.now()})
+        const category = await Category.find({_id: id});
+        return category? res.json(category): res.send("Something error")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.post('/category', async (req, res) => {
+    const categoryParams = req.body
+    try {
+        await Category.insertMany([categoryParams])
+        const category = await Category.find().sort({_id: -1}).limit(1);
+        return category? res.json(category): res.send("Something error")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+
 
 app.get('/category', async (req, res) => {
     const categoryName = req.query.name
