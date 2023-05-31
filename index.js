@@ -5,6 +5,7 @@ const mongoose = require("mongoose")
 const User = require("./models/users")
 const Category = require("./models/category")
 const Transaction = require("./models/transaction")
+const Income = require("./models/income")
 
 const app = express()
 const PORT = process.env.PORT || 3000
