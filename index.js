@@ -116,6 +116,53 @@ app.get('/transaction', async (req, res) => {
     return transaction? res.json(transaction): res.send("Something error")
 })
 
+//Income
+
+app.post('/income/add', async (req, res) => {
+    const incomeParams = req.body
+    try {
+        await Income.insertMany([incomeParams])
+        const income = await Income.find().sort({_id: -1}).limit(1);
+        return income? res.json(income): res.send("Something error")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.get('/income/user', async (req, res) => {
+    const userId = req.query.userId
+    const income = await Income.find({account: userId});
+    return income? res.json(income): res.send("Something error")
+})
+
+app.post('/income', async (req, res) => {
+    const incomeParams = req.body
+    try {
+        await Income.findByIdAndUpdate({_id: incomeParams.id}, {...incomeParams,updateAt: Date.now()})
+        const income = await Income.find({_id: incomeParams.id});
+        return income? res.json(income): res.send("Something error")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.delete('/income', async (req, res) => {
+    const id = req.query.id
+    try {
+        await Income.findByIdAndUpdate({_id: id}, {deletedAt: Date.now()})
+        const income = await Income.find({_id: id});
+        return income? res.json(income): res.send("Something error")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.get('/income', async (req, res) => {
+    const id = req.query.id
+    const income = await Income.find({_id: id});
+    return income? res.json(income): res.send("Something error")
+})
+
 connectDB().then(() => {
     app.listen(PORT, () => {
         console.log(`Listen on port ${PORT}`);

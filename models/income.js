@@ -6,9 +6,9 @@ const incomeSchemna = new Schema({
     category: {type:String},
     note: {type: String},
     image: {type: String},
-    time: {type: Date},
-    createdAt: {type: Date, default: Date.now},
-    updateAt: {type: Date, default: Date.now},
+    account: {type: String},
+    time: {type: Date, default: Date.now},
+    updateAt: {type: Date},
     deletedAt: {type: Date}
 })
 
