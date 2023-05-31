@@ -137,8 +137,6 @@ app.get('/category', async (req, res) => {
 
 //spending
 
-
-
 app.post('/spending/update', async (req, res) => {
     const spendingParams = req.body
     try {
