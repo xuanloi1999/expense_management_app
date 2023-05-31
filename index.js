@@ -4,7 +4,7 @@ const express = require("express")
 const mongoose = require("mongoose")
 const User = require("./models/users")
 const Category = require("./models/category")
-const Transaction = require("./models/transaction")
+const Spending = require("./models/spending")
 const Income = require("./models/income")
 const Account = require("./models/account")
 
@@ -135,46 +135,58 @@ app.get('/category', async (req, res) => {
     return category? res.json(category): res.send("Something error")
 })
 
-//Transaction
+//spending
 
-app.post('/transaction/add', async (req, res) => {
-    const transactionParams = req.body
+
+
+app.post('/spending/update', async (req, res) => {
+    const spendingParams = req.body
     try {
-        await Transaction.insertMany([transactionParams])
-        res.send("Add transaction completely")
+        await Spending.findByIdAndUpdate({_id: spendingParams.id}, {...spendingParams, updateAt: Date.now()})
+        const spending = await Spending.find({_id: spendingParams.id});
+        return spending? res.json(spending): res.send("Something error")
     } catch (error) {
         console.log("err" + error);
     }
 })
 
-app.post('/transaction/update', async (req, res) => {
-    const transactionParams = req.body
-    const transactionId = req.body.id
-    transactionParams.id = transactionId
-    transactionParams.updateAt = Date.now()
+app.post('/spending', async (req, res) => {
+    const spendingParams = req.body
     try {
-        await Transaction.updateOne({_id: transactionId}, transactionParams)
-        res.send("Update transaction completely")
+        await Spending.insertMany([spendingParams])
+        const spending = await Spending.find().sort({_id: -1}).limit(1);
+        return spending? res.json(spending): res.send("Something error")
     } catch (error) {
         console.log("err" + error);
     }
 })
 
-app.get('/transaction/delete', async (req, res) => {
-    const transactionID = req.query.id
+app.delete('/spending', async (req, res) => {
+    const spendingID = req.query.id
     try {
-        await Transaction.updateOne({id: transactionID}, {deletedAt: Date.now()})
-        res.send("Delete transaction completely")
+        await Spending.findByIdAndUpdate({_id: spendingID}, {deletedAt: Date.now()})
+        const spending = await Spending.find({_id: spendingID});
+        return spending? res.json(spending): res.send("Something error")
     } catch (error) {
         console.log("err" + error);
     }
 })
 
-app.get('/transaction', async (req, res) => {
-    const transactionId = req.query.id
-    const transaction = await Transaction.find({_id: transactionId});
-    console.log(transaction[0].deletedAt);
-    return transaction[0].deletedAt === undefined? res.json(transaction): res.send("Transaction was deleted")
+app.get('/spending/all', async (req, res) => {
+    const spending = await Spending.find();
+    let spendings = []
+    spending.map(s => {
+        if(s.deletedAt === undefined){
+            spendings.push(s)
+        }
+    })
+    return spendings !== []? res.json(spendings): res.send("spending was deleted all")
+})
+
+app.get('/spending', async (req, res) => {
+    const spendingId = req.query.id
+    const spending = await Spending.find({_id: spendingId});
+    return spending[0].deletedAt === undefined? res.json(spending): res.send("spending was deleted")
 })
 
 //Income
