@@ -6,6 +6,7 @@ const User = require("./models/users")
 const Category = require("./models/category")
 const Transaction = require("./models/transaction")
 const Income = require("./models/income")
+const Account = require("./models/account")
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -33,8 +34,15 @@ app.get('/', (req, res) => {
 app.post('/user/add', async (req, res) => {
     const user = req.body
     try {
-        await User.insertMany([user])
-        res.send("Data Added..")
+        const userExist = await User.find({username: user.username});
+        if(accountExist[0] == null){
+            await Account.insertMany([user])
+            users = await User.find().sort({_id: -1}).limit(1);;
+            return users? res.json(users): res.send("Something error")
+        }
+        else{
+            res.send("Account was exits")
+        }
     } catch (error) {
         console.log("err" + error);
     }
@@ -44,6 +52,44 @@ app.get('/user', async (req, res) => {
     const username = req.query.username
     const user = await User.find({username: username});
     return user? res.json(user): res.send("Something error")
+})
+
+//account 
+app.post('/account/update', async (req, res) => {
+    const accountParams = req.body
+    await Account.findByIdAndUpdate({_id: accountParams.id}, {...accountParams, updateAt: Date.now()});
+    const account = await Account.find({_id: accountParams.id});
+    return account? res.json(account): res.send("Something error")
+})
+
+app.delete('/account', async (req, res) => {
+    const id = req.query.id
+    const account = await Account.findByIdAndUpdate({_id: id}, { deletedAt: Date.now()});
+    return account? res.json(account): res.send("Something error")
+})
+
+app.post('/account', async (req, res) => {
+    const account = req.body
+    try {
+        const accountExist = await Account.find({username: account.username});
+        if(accountExist[0] == null){
+            await Account.insertMany([account])
+            accounts = await Account.find().sort({_id: -1}).limit(1);;
+            return accounts? res.json(accounts): res.send("Something error")
+        }
+        else{
+            res.send("Account was exits")
+        }
+        
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.get('/account', async (req, res) => {
+    const id = req.query.id
+    const account = await Account.find({_id: id});
+    return account? res.json(account): res.send("Something error")
 })
 
 //category
