@@ -132,7 +132,12 @@ app.post('/category', async (req, res) => {
     }
 })
 
-
+app.get('/category/typeCategory', async (req, res) => {
+    const typeCategory = req.query.typeCategory
+    
+    const category = await Category.find({typeCategory: typeCategory});
+    return category? res.json(category): res.send("Something error")
+})
 
 // app.get('/category', async (req, res) => {
 //     const categoryName = req.query.name
