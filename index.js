@@ -86,6 +86,12 @@ app.post('/account', async (req, res) => {
     }
 })
 
+app.get('/account/username', async (req, res) => {
+    const username = req.query.username
+    const account = await Account.find({username: username});
+    return account[0]? res.json(account): res.send("Account was deleted")
+})
+
 app.get('/account', async (req, res) => {
     const id = req.query.id
     const account = await Account.find({_id: id});
@@ -128,10 +134,14 @@ app.post('/category', async (req, res) => {
 
 
 
+// app.get('/category', async (req, res) => {
+//     const categoryName = req.query.name
+//     const regex = new RegExp(`.*${categoryName}\\w*`);
+//     const category = await Category.find({name: {$regex: regex}});
+//     return category? res.json(category): res.send("Something error")
+// })
 app.get('/category', async (req, res) => {
-    const categoryName = req.query.name
-    const regex = new RegExp(`.*${categoryName}\\w*`);
-    const category = await Category.find({name: {$regex: regex}});
+    const category = await Category.find();
     return category? res.json(category): res.send("Something error")
 })
 
@@ -233,6 +243,8 @@ app.get('/income', async (req, res) => {
     const income = await Income.find({_id: id});
     return income? res.json(income): res.send("Something error")
 })
+
+//Transaction
 
 connectDB().then(() => {
     app.listen(PORT, () => {
