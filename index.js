@@ -7,6 +7,7 @@ const Category = require("./models/category")
 const Spending = require("./models/spending")
 const Income = require("./models/income")
 const Account = require("./models/account")
+const Transaction = require("./models/transaction")
 
 const app = express()
 const PORT = process.env.PORT || 3000
@@ -245,6 +246,32 @@ app.get('/income', async (req, res) => {
 })
 
 //Transaction
+app.post('/transaction/update', async (req, res) => {
+    const transactionParams = req.body
+    transactionParams.updateAt = Date.now()
+    try {
+        await Transaction.updateOne({id: transactionParams.id}, transactionParams)
+        res.send("Update transaction completely")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.post('/transaction', async (req, res) => {
+    const transactionParams = req.body
+    try {
+        await Transaction.insertMany([transactionParams])
+        res.send("Add transaction complete")
+    } catch (error) {
+        console.log("err" + error);
+    }
+})
+
+app.get('/transaction', async (req, res) => {
+    const accountID = req.query.accountID
+    const transaction = await Transaction.find({accountID: accountID});
+    return transaction? res.json(transaction): res.send("Something error")
+})
 
 connectDB().then(() => {
     app.listen(PORT, () => {
