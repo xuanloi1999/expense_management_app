@@ -134,10 +134,14 @@ app.post('/category', async (req, res) => {
 
 
 
+// app.get('/category', async (req, res) => {
+//     const categoryName = req.query.name
+//     const regex = new RegExp(`.*${categoryName}\\w*`);
+//     const category = await Category.find({name: {$regex: regex}});
+//     return category? res.json(category): res.send("Something error")
+// })
 app.get('/category', async (req, res) => {
-    const categoryName = req.query.name
-    const regex = new RegExp(`.*${categoryName}\\w*`);
-    const category = await Category.find({name: {$regex: regex}});
+    const category = await Category.find();
     return category? res.json(category): res.send("Something error")
 })
 
