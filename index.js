@@ -269,7 +269,8 @@ app.post('/transaction', async (req, res) => {
 
 app.get('/transaction', async (req, res) => {
     const accountID = req.query.accountID
-    const transaction = await Transaction.find({accountID: accountID});
+    const typeTransaction = req.query.typeTransaction
+    const transaction = await Transaction.find({accountID: accountID, typeTransaction: typeTransaction});
     return transaction? res.json(transaction): res.send("Something error")
 })
 
