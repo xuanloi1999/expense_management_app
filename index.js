@@ -89,7 +89,7 @@ app.post('/account', async (req, res) => {
 app.get('/account/username', async (req, res) => {
     const username = req.query.username
     const account = await Account.find({username: username});
-    return account[0].deletedAt === undefined? res.json(account): res.send("Account was deleted")
+    return account[0]? res.json(account): res.send("Account was deleted")
 })
 
 app.get('/account', async (req, res) => {
@@ -239,6 +239,8 @@ app.get('/income', async (req, res) => {
     const income = await Income.find({_id: id});
     return income? res.json(income): res.send("Something error")
 })
+
+//Transaction
 
 connectDB().then(() => {
     app.listen(PORT, () => {
